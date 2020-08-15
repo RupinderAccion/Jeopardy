@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { setCategories } from "../actions";
+import { setCategories, pickCategory } from "../actions";
 class App extends Component {
-
   componentDidMount() {
     if (this.props.categories.length === 0) {
       fetch("http://jservice.io/api/categories?count=20")
@@ -13,16 +12,17 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div>
         <h2>Jeopardy!</h2>
-        {this.props.categories.map(category => {
-            return(
+        {this.props.categories.map((category) => {
+          return (
             <div key={category.id}>
-            <Link to={"/category"}><h4>{category.title}</h4></Link>
+              <Link to={"/category"} onClick={() => this.props.pickCategory(category)}>
+                <h4>{category.title}</h4>
+              </Link>
             </div>
-            )
+          );
         })}
       </div>
     );
@@ -31,8 +31,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    categories: state,
+    categories: state.categories,
   };
 };
 
-export default connect(mapStateToProps, { setCategories })(App);
+export default connect(mapStateToProps, { setCategories, pickCategory })(App);
